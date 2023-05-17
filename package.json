@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "sass-resources-loader": "^2.2.5"
+  }
+}
