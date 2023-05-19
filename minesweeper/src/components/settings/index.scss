@@ -1,0 +1,220 @@
+.wrapper-settings {
+  &.show {
+    .background {
+      opacity: 0.8;
+      visibility: visible;
+    }
+    .settings {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: (rgb(55, 55, 55));
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.4s;
+    z-index: 2;
+    cursor: pointer;
+  }
+  .settings {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 400px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: 0.2s;
+    opacity: 0;
+    padding: 35px;
+    background-color: var(--bgcolor);
+    transform-style: preserve-3d;
+    transition: transform 300ms;
+    box-shadow: 0px 0px 10px 1px #000000ee;
+    border-radius: 15px;
+    visibility: hidden;
+    transition: 0.4s;
+    z-index: 3;
+
+    &__row {
+    }
+    &__close {
+      position: absolute;
+      top: -25px;
+      right: -25px;
+      width: 25px;
+      height: 25px;
+      color: var(--textcolor);
+      transition: 0.6s;
+    }
+
+    &__close:hover {
+      transform: rotate(90deg);
+    }
+
+    .close-icon {
+      pointer-events: none;
+    }
+  }
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: relative;
+
+    & .label {
+      transition: 0.3s;
+      color: var(--textcolor);
+    }
+
+    & .input:valid ~ .label,
+    & .input:focus ~ .label {
+      transition: 0.3s;
+      padding-left: 2px;
+      transform: translateY(-35px);
+    }
+
+    & .input:valid,
+    & .input:focus {
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 1),
+        -1px -1px 6px rgba(255, 255, 255, 0.4),
+        inset 3px 3px 10px rgba(0, 0, 0, 1),
+        inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+    }
+
+    & .input {
+      height: 45px;
+      border: none;
+      outline: none;
+      padding: 0px 7px;
+      border-radius: 6px;
+      color: var(--textcolor);
+      font-size: 15px;
+      background-color: transparent;
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 1),
+        -1px -1px 6px rgba(255, 255, 255, 0.4);
+
+      &:focus {
+        border: 2px solid transparent;
+        color: var(--textcolor);
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 1),
+          -1px -1px 6px rgba(255, 255, 255, 0.4),
+          inset 3px 3px 10px rgba(0, 0, 0, 1),
+          inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    &__button {
+      align-items: center;
+      background-color: transparent;
+      color: var(--textcolor);
+      cursor: pointer;
+      display: flex;
+      font-family: ui-sans-serif, system-ui, -apple-system, system-ui,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.5;
+      text-decoration: none;
+      text-transform: uppercase;
+      margin: 0 auto;
+      outline: 0;
+      border: 0;
+      transition: 0.2s;
+      p {
+        width: 0;
+        overflow: hidden;
+        transition: 0.4s;
+        pointer-events: none;
+      }
+      &:hover {
+        p {
+          width: 80px;
+        }
+      }
+    }
+  }
+
+  .radio {
+    &__title {
+      color: var(--textcolor);
+    }
+    .input {
+      -moz-appearance: none;
+      appearance: none;
+      -webkit-appearance: none;
+      /* remove default */
+      display: block;
+      margin: 10px;
+      width: 24px;
+      height: 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      vertical-align: middle;
+      box-shadow: hsla(0, 0%, 100%, 0.15) 0 1px 1px,
+        inset hsla(0, 0%, 0%, 0.5) 0 0 0 1px;
+      background-color: hsla(0, 0%, 0%, 0.2);
+      background-image: -webkit-radial-gradient(
+        hsla(200, 100%, 90%, 1) 0%,
+        hsla(200, 100%, 70%, 1) 15%,
+        hsla(200, 100%, 60%, 0.3) 28%,
+        hsla(200, 100%, 30%, 0) 70%
+      );
+      background-repeat: no-repeat;
+      transition: background-position 0.15s cubic-bezier(0.8, 0, 1, 1),
+        transform 0.25s cubic-bezier(0.8, 0, 1, 1);
+      outline: none;
+    }
+
+    .input:checked {
+      -webkit-transition: background-position 0.2s 0.15s
+          cubic-bezier(0, 0, 0.2, 1),
+        -webkit-transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    .input:active {
+      -webkit-transform: scale(1.5);
+      -webkit-transition: -webkit-transform 0.1s cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    /* The up/down direction logic */
+
+    .input,
+    .input:active {
+      background-position: 0 24px;
+    }
+
+    .input:checked {
+      background-position: 0 0;
+    }
+
+    .input:checked ~ .input,
+    .input:checked ~ .input:active {
+      background-position: 0 -24px;
+    }
+  }
+
+  .radio-button {
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 25px;
+    color: var(--textcolor);
+  }
+}

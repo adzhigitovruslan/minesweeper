@@ -1,0 +1,60 @@
+<div class="wrapper-settings">
+  <div class="background"></div>
+  <div class="settings">
+    <div class="settings__row block">
+      <button class="settings__close">
+        <i class="close-icon"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </i>
+      </button>
+      <label class="label">Mines</label>
+      <input
+        id="input_mines"
+        class="input"
+        name="number"
+        type="number"
+        value="10"
+        placeholder="Enter amount of mines"
+        required
+      />
+    </div>
+    <div class="settings__row block radio">
+      <h2 class="radio__title">Choose game size</h2>
+      <div class="radio-input">
+        <label class="radio-button"
+          >10x10
+          <input name="radio" type="radio" class="input radio_input-btn" value="10" checked />
+        </label>
+
+        <label class="radio-button"
+          >15x15
+          <input name="radio" type="radio" class="input radio_input-btn" value="15" />
+        </label>
+
+        <label class="radio-button"
+          >25x25
+          <input name="radio" type="radio" class="input radio_input-btn" value="25" />
+        </label>
+      </div>
+    </div>
+    <div class="settings__row block">
+      <button class="block__button">
+        <p>create</p>
+        new game
+      </button>
+    </div>
+  </div>
+</div>
