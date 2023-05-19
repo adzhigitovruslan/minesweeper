@@ -3,15 +3,17 @@ import Header from '../components/header';
 import Main from '../components/main';
 import Footer from '../components/footer';
 import Settings from '../components/settings';
+import lose from '../assets/lose.mp3';
+import win from '../assets/win.mp3';
 
 export class Minesweeper {
   constructor(opts) {
     let currentData = {}
 
-    // if (isLocalStorage && localStorage["minesweeper.data"]) {
-    //   currentData = JSON.parse(localStorage["minesweeper.data"]);
-    //   this.currentGame = true;
-    // }
+    if (hasLocalStorage && localStorage["minesweeper.data"]) {
+      currentData = JSON.parse(localStorage["minesweeper.data"]);
+      this.currentGame = true;
+    }
 
     Object.assign(
       this,
@@ -19,9 +21,10 @@ export class Minesweeper {
         grid: [], //will hold an array of Cell objects
         minesFound: 0, //number of mines correctly flagged by user
         falseMines: 0, //number of mines incorrectly flagged
-        status_msg: "Playing", //game status msg, 'Won','Lost', or 'Playing'
+        status_msg: "Minesweeper", //game status msg, 'Minesweeper', 'Won','Lost', or 'Playing'
         playing: true,
         movesMade: 0, //keep track of the number of moves
+        timer: false,
       },
       { options: opts },
       currentData
@@ -44,7 +47,7 @@ export class Minesweeper {
     } else {
       this.startGame();
     }
-    // this.saveGame();
+    this.saveGame();
   }
 
   addHtml() {
@@ -103,20 +106,25 @@ export class Minesweeper {
       for (let j = 0; j < this.options["buttons"]; j++) {
         let cell = this.grid[i][j];
 
-        let newClass = '';
+        let newClass = [];
         let innerText = '';
 
         if (cell.isFlagged) {
-          newClass = "flagged";
+          newClass = ["flagged"];
         } else if (cell.isOpened) {
-          newClass = `opened ${cell.value}`;
+          newClass = [`opened`, `${cell.value}`]
           innerText = (!cell.isMine ? cell.value || '' : '');
         }
 
         const button = document.createElement("button");
         button.classList.add("button");
 
-        if (newClass) button.classList.add(newClass)
+        if (newClass) {
+          newClass.forEach((el) => {
+            button.classList.add(...newClass)
+          })
+        }
+
         button.textContent = innerText;
         button.setAttribute('data-x', j)
         button.setAttribute('data-y', i)
@@ -154,7 +162,7 @@ export class Minesweeper {
     moves.textContent = this.movesMade;
     gameStatus.textContent = this.status_msg;
     totalMines.textContent = this.options.mines;
-    playTimer.textContent = '00:00';
+    playTimer.textContent = '00 : 00';
   }
 
   loadData() {
@@ -185,8 +193,13 @@ export class Minesweeper {
       cellElem.textContent = (!cell.isMine ? cell.value || "" : "");
 
       if (cell.isMine) {
-        this.status_msg = "Sorry, you lost!";
+        this.status_msg = "Sorry, you lose!";
         this.playing = false;
+        setTimeout(() => {
+          const loseSound = new Audio(lose);
+          loseSound.play();
+        }, 1000);
+
         document.getElementById("game_status").textContent = this.status_msg;
         document.getElementById("game_status").style.color = "#EE0000";
       } else if (!cell.isFlagged && cell.value == 0) {
@@ -239,13 +252,13 @@ export class Minesweeper {
     if (this.minesFound === this.options.mines && this.falseMines === 0) {
       this.status_msg = 'You are the winner !';
       this.playing = false;
+      this.timer = false;
+      setTimeout(() => {
+        const winSound = new Audio(win);
+        winSound.play();
+      }, 1000);
       gameStatus.textContent = this.status_msg;
       gameStatus.style.color = "#00c000";
-    } else {
-      this.status_msg = "You lose!";
-      this.playing = false;
-      gameStatus.textContent = this.status_msg;
-      gameStatus.style.color = '#ee0000';
     }
 
     this.saveGame();
@@ -263,11 +276,19 @@ export class Minesweeper {
   }
 
 
-  // saveGame() {
-  //   if (!isLocalStorage) {
-  //     return false
-  //   } else {
-  //     localStorage["minesweeper.data"] = JSON.stringify(this);
-  //   }
-  // }
+  saveGame() {
+    if (!hasLocalStorage) {
+      return false
+    } else {
+      localStorage["minesweeper.data"] = JSON.stringify(this);
+    }
+  }
 }
+
+const hasLocalStorage = (function () {
+  try {
+    return "localStorage" in window && window["localStorage"] !== null;
+  } catch (e) {
+    return false;
+  }
+})();
