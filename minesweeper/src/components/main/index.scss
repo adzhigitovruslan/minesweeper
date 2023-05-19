@@ -12,6 +12,7 @@
   min-width: 300px;
   background-color: var(--bgcolor);
   border-radius: 25px;
+  box-shadow: 0px 0px 10px 1px var(--textcolor);
   transition: 0.2s;
   &__row:not(:last-child) {
     margin-bottom: $mb + px;
@@ -38,7 +39,7 @@
   }
 }
 
-.settings {
+.settings-btn {
   display: flex;
   padding: 5px;
   border-radius: 50%;
@@ -56,6 +57,7 @@
 
   &__icon {
     display: flex;
+    pointer-events: none;
     svg {
       fill: var(--textcolor);
       width: $icon-width + px;
@@ -70,6 +72,10 @@
   justify-content: space-between;
   align-items: center;
 
+  & .text {
+    color: var(--textcolor);
+  }
+
   &__title {
     color: var(--textcolor);
     transition: 0.2s;
@@ -81,56 +87,40 @@
     opacity: 0.8;
   }
 
-  &__timer {
-  }
-
-  &__bombs {
+  &__info-block {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    padding: 5px 10px;
+    color: var(--textcolor);
+    background: var(--bgcolor);
+    box-shadow: inset 8px 8px 14px var(--boxshadow-one),
+      inset -8px -8px 14px var(--boxshadow-two);
+    transition: 0.2s;
   }
 }
 .timer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 10px;
-  padding: 5px 10px;
-  background: var(--bgcolor);
-  box-shadow: inset 8px 8px 14px var(--boxshadow-one),
-    inset -8px -8px 14px var(--boxshadow-two);
-  transition: 0.2s;
   &__count {
-    color: var(--textcolor);
     margin-left: 10px;
     transition: 0.2s;
   }
   &__icon {
     display: flex;
-    color: var(--textcolor);
     transition: 0.2s;
     width: $icon-width + px;
     height: $icon-height + px;
   }
 }
 .bombs {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 10px;
-  padding: 5px 10px;
-  background: var(--bgcolor);
-  box-shadow: inset 8px 8px 14px var(--boxshadow-one),
-    inset -8px -8px 14px var(--boxshadow-two);
-  transition: 0.2s;
-
   &__icon {
     display: flex;
-    color: var(--textcolor);
     transition: 0.2s;
     width: $icon-width + px;
     height: $icon-height + px;
   }
 
   &__count {
-    color: var(--textcolor);
     margin-left: 10px;
     transition: 0.2s;
   }
@@ -141,24 +131,31 @@
   grid-template-columns: repeat(var(--size), 1fr);
   grid-template-rows: repeat(var(--size), 1fr);
   gap: 10px;
-}
 
-.button {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #1a1a1a;
-  border-radius: 10px;
-
-  background: #272626;
-  box-shadow: inset 5px -5px 9px #1e1d1d, inset -5px 5px 9px #302f2f;
-  &.one {
-    color: var(--numone);
-  }
-  &.two {
-    color: var(--numtwo);
-  }
-  &.three {
-    color: var(--numthree);
+  .button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #1a1a1a;
+    border-radius: 10px;
+    background: #272626;
+    box-shadow: 3px 3px 10px rgb(0, 0, 0),
+      -1px -1px 6px rgba(255, 255, 255, 0.4);
+    font-size: $buttonInnerSize + px;
+    transition: 0.4s;
+    &.code-1 {
+      color: var(--numone);
+    }
+    &.code-2 {
+      color: var(--numtwo);
+    }
+    &.code-3 {
+      color: var(--numthree);
+    }
+    &.opened {
+      box-shadow: 3px 3px 10px rgb(0, 0, 0),
+        -1px -1px 6px rgba(255, 255, 255, 0.4), inset 3px 3px 10px rgb(0, 0, 0),
+        inset -1px -1px 6px rgba(255, 255, 255, 0.4);
+    }
   }
 }
 

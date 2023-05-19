@@ -1,8 +1,8 @@
 <main class="wrapper minesweeper">
   <div class="minesweeper__row row">
     <h2 class="row__title">Arcade</h2>
-    <button class="row__settings settings">
-      <i class="settings__icon">
+    <button class="row__settings settings-btn">
+      <i class="settings-btn__icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -26,7 +26,7 @@
     </button>
   </div>
   <div class="minesweeper__row row">
-    <div class="row__timer timer">
+    <div class="row__info-block timer">
       <i class="timer__icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -43,9 +43,12 @@
           />
         </svg>
       </i>
-      <div class="timer__count">1:30</div>
+      <div id="play-timer" class="timer__count">1:30</div>
     </div>
-    <div class="row__bombs bombs">
+    <div class="row__info-block status">
+      <p class="status__title">Game status: <i id="game_status"></i></p>
+    </div>
+    <div class="row__info-block bombs">
       <i class="bombs__icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -67,7 +70,21 @@
           />
         </svg>
       </i>
-      <div class="bombs__count">12</div>
+      <div id="totalMines" class="bombs__count">12</div>
+    </div>
+  </div>
+  <div class="minesweeper__row row">
+    <div class="row__info-block timer">
+      <i class="timer__text text">
+        Moves: 
+      </i>
+      <div id="moves" class="timer__count">0</div>
+    </div>
+    <div class="row__info-block bombs">
+      <i class="bombs__text text">
+        Mines left:
+      </i>
+      <div id="mines-left" class="bombs__count">0</div>
     </div>
   </div>
   <div class="minesweeper__row row field"></div>
