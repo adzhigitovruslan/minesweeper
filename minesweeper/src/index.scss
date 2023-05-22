@@ -2,7 +2,8 @@
 @import "./styles/fonts";
 
 body {
-  background: black;
+  background: var(--bg);
+  transition: 0.2s;
   &.show {
     overflow: hidden;
   }

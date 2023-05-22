@@ -1,8 +1,16 @@
+@import "./variable";
+
 .header {
+  margin: 20px auto 20px auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: $maxWidthHeader + px;
   &__title {
     text-align: center;
-    color: #fff;
+    color: var(--header-title);
     font-size: 25px;
-    margin: 20px;
+    transition: 0.2s;
   }
 }

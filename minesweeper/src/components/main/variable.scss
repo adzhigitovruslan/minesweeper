@@ -2,6 +2,8 @@ $icon-height: 20;
 $icon-width: 20;
 $mb: 25;
 $buttonInnerSize: 16;
+$fontSize: 16;
+$infoBlockWidth: 110;
 
 [size="easy"] {
   --size: 10;
@@ -16,23 +18,31 @@ $buttonInnerSize: 16;
 }
 
 [dark-theme="dark"] {
-  --bgcolor: #212121;
+  --header-title: #fafafa;
   --close-mines: #c64b25;
   --numone: #c64b25;
   --numtwo: #b49b61;
   --numthree: rgb(47, 172, 235);
   --textcolor: rgb(19, 125, 246);
-  --boxshadow-one: #121212;
-  --boxshadow-two: #303030;
+  --bg-button: #272626;
+  --bg: #000;
+  --bg-field-color: #212121;
+  --border-button: #1a1a1a;
+  --boxshadow-one: rgb(0, 0, 0);
+  --boxshadow-two: rgba(255, 255, 255, 0.4);
 }
 
 [dark-theme="light"] {
-  --bgcolor: #d2bd81;
+  --header-title: #8f715b;
   --close-mines: #c64b25;
   --numone: #c64b25;
   --numtwo: #b49b61;
   --numthree: rgb(47, 172, 235);
-  --textcolor: rgb(19, 125, 246);
+  --textcolor: #354259;
+  --bg: #C2DED1;
+  --bg-field-color: #CDC2AE;
+  --bg-button: #AD8B73;
+  --border-button: #8f715b;
   --boxshadow-one: #a09062;
   --boxshadow-two: #ffeaa0;
 }

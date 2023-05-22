@@ -10,7 +10,7 @@
   padding: 25px 15px;
   margin: 0 auto;
   min-width: 300px;
-  background-color: var(--bgcolor);
+  background-color: var(--bg-field-color);
   border-radius: 25px;
   box-shadow: 0px 0px 10px 1px var(--textcolor);
   transition: 0.2s;
@@ -40,12 +40,23 @@
 }
 
 .settings-btn {
-  display: flex;
-  padding: 5px;
-  border-radius: 50%;
-  background: var(--bgcolor);
-  box-shadow: inset 8px 8px 14px var(--boxshadow-one),
-    inset -8px -8px 14px var(--boxshadow-two);
+  & .settings-btn__icon {
+    color: var(--bg-field-color);
+    margin-left: 10px;
+  }
+
+  &:hover {
+    & .settings-btn__icon {
+      -webkit-animation: settingsIcon 3 5s linear infinite;
+      animation: settingsIcon 5s linear infinite;
+      opacity: 0.8;
+      transition: 0.2s;
+    }
+    & .settings-btn__text {
+      opacity: 0.8;
+      transition: 0.2s;
+    }
+  }
   svg {
     fill: var(--textcolor);
     width: $icon-width + px;
@@ -67,24 +78,26 @@
   }
 }
 
+.reset {
+  &__text {
+    margin: 0 auto;
+  }
+}
+
+.reset:hover {
+  & .reset__text {
+    opacity: 0.8;
+  }
+}
+
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  & .text {
-    color: var(--textcolor);
-  }
-
   &__title {
     color: var(--textcolor);
     transition: 0.2s;
-  }
-
-  &__settings:hover {
-    -webkit-animation: settingsIcon 3 5s linear infinite;
-    animation: settingsIcon 5s linear infinite;
-    opacity: 0.8;
   }
 
   &__info-block {
@@ -93,21 +106,25 @@
     justify-content: space-between;
     border-radius: 10px;
     padding: 5px 10px;
+    width: $infoBlockWidth + px;
+    font-size: $fontSize + px;
     color: var(--textcolor);
-    background: var(--bgcolor);
-    box-shadow: inset 8px 8px 14px var(--boxshadow-one),
-      inset -8px -8px 14px var(--boxshadow-two);
+    background: var(--bg-field-color);
+    box-shadow: 3px 3px 10px var(--boxshadow-one),
+      -1px -1px 6px var(--boxshadow-two);
     transition: 0.2s;
+
+    & .status__title {
+      margin: 0 auto;
+    }
   }
 }
 .timer {
   &__count {
     margin-left: 10px;
-    transition: 0.2s;
   }
   &__icon {
     display: flex;
-    transition: 0.2s;
     width: $icon-width + px;
     height: $icon-height + px;
   }
@@ -119,11 +136,6 @@
     width: $icon-width + px;
     height: $icon-height + px;
   }
-
-  &__count {
-    margin-left: 10px;
-    transition: 0.2s;
-  }
 }
 
 .field {
@@ -131,17 +143,55 @@
   grid-template-columns: repeat(var(--size), 1fr);
   grid-template-rows: repeat(var(--size), 1fr);
   gap: 10px;
-
+  &[size="hard"] {
+    .field {
+      @media (min-width: 500px) {
+        gap: 5px;
+      }
+      @media (min-width: 991px) {
+        gap: 10px;
+      }
+    }
+    .button {
+      @media (min-width: 500px) {
+        width: 10px;
+        height: 10px;
+      }
+      @media (min-width: 991px) {
+        width: 20px;
+        height: 20px;
+      }
+      @media (min-width: 1200px) {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+  &[size="medium"] {
+    @media (min-width: 500px) {
+      gap: 10px;
+    }
+    .button {
+      @media (min-width: 500px) {
+        width: 18px;
+        height: 18px;
+      }
+      @media (min-width: 700px) {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
   .button {
     width: 30px;
     height: 30px;
-    border: 1px solid #1a1a1a;
+    border: 1px solid var(--border-button);
     border-radius: 10px;
-    background: #272626;
+    background: var(--bg-button);
     box-shadow: 3px 3px 10px rgb(0, 0, 0),
       -1px -1px 6px rgba(255, 255, 255, 0.4);
     font-size: $buttonInnerSize + px;
-    transition: 0.4s;
+    transition: 0.2s;
     &.code-1 {
       color: var(--numone);
     }
@@ -188,5 +238,6 @@
 //   syntax: '<angle>';
 //   initial-value: 0deg;
 //   inherits: false;
+// }
 // }
 // }

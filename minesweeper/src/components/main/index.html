@@ -1,7 +1,29 @@
 <main class="wrapper minesweeper">
   <div class="minesweeper__row row">
-    <h2 class="row__title">Arcade</h2>
-    <button class="row__settings settings-btn">
+    <div class="row__info-block timer">
+      <i class="timer__icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </i>
+      <div id="play-timer" class="timer__count">1:30</div>
+    </div>
+    <div class="row__info-block status">
+      <p class="status__title" id="game_status"></p>
+    </div>
+    <button class="row__info-block settings-btn">
+      <p class="settings-btn__text">Options</p> 
       <i class="settings-btn__icon">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -27,64 +49,21 @@
   </div>
   <div class="minesweeper__row row">
     <div class="row__info-block timer">
-      <i class="timer__icon">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-      </i>
-      <div id="play-timer" class="timer__count">1:30</div>
-    </div>
-    <div class="row__info-block status">
-      <p class="status__title" id="game_status"></p>
-    </div>
-    <div class="row__info-block bombs">
-      <i class="bombs__icon">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z"
-          />
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z"
-          />
-        </svg>
-      </i>
-      <div id="totalMines" class="bombs__count">12</div>
-    </div>
-  </div>
-  <div class="minesweeper__row row">
-    <div class="row__info-block timer">
-      <i class="timer__text text">
+      <p class="timer__text text">
         Moves: 
-      </i>
-      <div id="moves" class="timer__count">0</div>
+      </p>
+      <p id="moves" class="timer__count">0</p>
     </div>
+    <button class="row__info-block reset">
+      <p class="reset__text">
+        Reset
+      </p>
+    </button>
     <div class="row__info-block bombs">
-      <i class="bombs__text text">
+      <p class="bombs__text text">
         Mines left:
-      </i>
-      <div id="mines-left" class="bombs__count">0</div>
+      </p>
+      <p id="mines-left" class="bombs__count">0</p>
     </div>
   </div>
   <div class="minesweeper__row row field"></div>

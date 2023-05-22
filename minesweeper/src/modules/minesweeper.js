@@ -3,8 +3,10 @@ import Header from '../components/header';
 import Main from '../components/main';
 import Footer from '../components/footer';
 import Settings from '../components/settings';
+import themeToggle from '../components/switch-theme/';
 import lose from '../assets/lose.mp3';
 import win from '../assets/win.mp3';
+import Result from '../components/results';
 
 export class Minesweeper {
   constructor(opts) {
@@ -25,22 +27,12 @@ export class Minesweeper {
         playing: true,
         movesMade: 0, //keep track of the number of moves
         timer: false,
+        result: [],
+        showTime: '',
       },
       { options: opts },
       currentData
     );
-
-    // if (isNaN(this.options["mines"])) {
-    //   this.options["mines"] = 10;
-    // }
-    // if (this.options["mines"] < 0) {
-    //   this.options["mines"] = 1;
-    // } else if (
-    //   this.options["mines"] >
-    //   this.options["rows"] * this.options["cols"]
-    // ) {
-    //   this.options["mines"] = this.options["rows"] * this.options["cols"];
-    // }
 
     if (this.currentGame) {
       this.loadData();
@@ -52,7 +44,8 @@ export class Minesweeper {
 
   addHtml() {
     const body = document.querySelector("body");
-    body.append(Header, Main, Footer, Settings);
+    body.append(Header, Main, Footer, Settings, Result);
+    Header.appendChild(themeToggle);
     console.log(this.showFieldToConsole());
   }
 
@@ -112,7 +105,7 @@ export class Minesweeper {
         if (cell.isFlagged) {
           newClass = ["flagged"];
         } else if (cell.isOpened) {
-          newClass = [`opened`, `${cell.value}`]
+          newClass = [`opened`, `code-${cell.value}`]
           innerText = (!cell.isMine ? cell.value || '' : '');
         }
 
@@ -154,14 +147,12 @@ export class Minesweeper {
 
     const minesLeft = document.querySelector("#mines-left");
     const moves = document.querySelector("#moves");
-    const totalMines = document.querySelector("#totalMines");
     const gameStatus = document.querySelector("#game_status");
     const playTimer = document.querySelector("#play-timer");
 
     minesLeft.textContent = this.options.mines - (this.falseMines + this.minesFound)
     moves.textContent = this.movesMade;
     gameStatus.textContent = this.status_msg;
-    totalMines.textContent = this.options.mines;
     playTimer.textContent = '00 : 00';
   }
 
@@ -193,7 +184,7 @@ export class Minesweeper {
       cellElem.textContent = (!cell.isMine ? cell.value || "" : "");
 
       if (cell.isMine) {
-        this.status_msg = "Sorry, you lose!";
+        this.status_msg = "You lost!";
         this.playing = false;
         setTimeout(() => {
           const loseSound = new Audio(lose);
@@ -202,6 +193,7 @@ export class Minesweeper {
 
         document.getElementById("game_status").textContent = this.status_msg;
         document.getElementById("game_status").style.color = "#EE0000";
+        this.saveResult(this.status_msg);
       } else if (!cell.isFlagged && cell.value == 0) {
         const adjacentCells = this.getAdjacentCells(cell.y, cell.x);
         for (let i = 0; i < adjacentCells.length; i++) {
@@ -275,13 +267,31 @@ export class Minesweeper {
     return result;
   }
 
-
   saveGame() {
     if (!hasLocalStorage) {
       return false
     } else {
       localStorage["minesweeper.data"] = JSON.stringify(this);
     }
+  }
+
+  saveResult(result, time) {
+    let ulResult = document.querySelector(".list")
+    const li = document.createElement("li")
+    li.classList.add("list__item");
+    const ul = ulResult.children;
+
+    li.innerHTML = `<span class"list__result">${this.status_msg}</span><span class"list__time">${this.showTime}</span>`
+    if (ul.length >= 10) {
+      for (let i = 0; i < ul.length; i++) {
+        if (ul[i + 1]) {
+          ul[i] = ul[i + 1]
+        }
+        ulResult.appendChild(li);
+      }
+    }
+    ulResult.appendChild(li);
+    this.result.push()
   }
 }
 
