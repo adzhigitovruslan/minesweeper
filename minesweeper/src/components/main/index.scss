@@ -211,33 +211,3 @@
     }
   }
 }
-
-// .button:active {
-//   -o-border-image:25px;
-//      border-image-radius:25px;
-//   --angle: 0deg;
-//   -o-border-image: linear-gradient(var(--angle), green, yellow) 1;
-//   border-image: linear-gradient(var(--angle), green, yellow) 1;
-//   -webkit-animation: 10s rotate linear infinite;
-//   animation: 10s rotate linear infinite;
-// }
-
-// @-webkit-keyframes rotate {
-//   to {
-//     --angle: 360deg;
-//   }
-// }
-
-// @keyframes rotate {
-//   to {
-//     --angle: 360deg;
-//   }
-// }
-
-// @property --angle {
-//   syntax: '<angle>';
-//   initial-value: 0deg;
-//   inherits: false;
-// }
-// }
-// }

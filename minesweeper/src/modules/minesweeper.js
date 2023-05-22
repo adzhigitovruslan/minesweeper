@@ -1,7 +1,6 @@
 import { Cell } from './cell';
 import Header from '../components/header';
 import Main from '../components/main';
-import Footer from '../components/footer';
 import Settings from '../components/settings';
 import themeToggle from '../components/switch-theme/';
 import lose from '../assets/lose.mp3';
@@ -44,7 +43,7 @@ export class Minesweeper {
 
   addHtml() {
     const body = document.querySelector("body");
-    body.append(Header, Main, Footer, Settings, Result);
+    body.append(Header, Main, Settings, Result);
     Header.appendChild(themeToggle);
     console.log(this.showFieldToConsole());
   }
@@ -252,7 +251,6 @@ export class Minesweeper {
       gameStatus.textContent = this.status_msg;
       gameStatus.style.color = "#00c000";
     }
-
     this.saveGame();
   }
 
@@ -285,9 +283,9 @@ export class Minesweeper {
     if (ul.length >= 10) {
       for (let i = 0; i < ul.length; i++) {
         if (ul[i + 1]) {
-          ul[i] = ul[i + 1]
+          ul[i].innerHTML = ul[i + 1].innerHTML
         }
-        ulResult.appendChild(li);
+        ul[10].innerHTML = (li);
       }
     }
     ulResult.appendChild(li);

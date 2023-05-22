@@ -109,6 +109,10 @@ window.onload = function () {
     newGame(opts);
   });
 
+  document.querySelector("#game_status").addEventListener("click", () => {
+    play.saveResult()
+  })
+
   document.querySelector(".block__button").addEventListener("click", (event) => {
     const opts = {
       mines: parseInt(document.querySelector("#input_mines").value, 10),
