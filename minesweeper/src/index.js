@@ -5,7 +5,7 @@ import pickMp3 from './assets/pick.mp3';
 import rightClick from './assets/rightClick.mp3';
 
 let play;
-let [seconds, minutes] = [0, 0, 0, 0];
+let [seconds, minutes] = [0, 0];
 let int = null;
 
 function newGame(opts) {
@@ -16,33 +16,45 @@ function startTimer() {
   if (int !== null) {
     clearInterval(int);
   }
-  int = setInterval(displayTimer, 1000);
+
+  int = setInterval(function () {
+    displayTimer()
+  }, 1000);
 }
+
+let sec = JSON.parse(localStorage.getItem("seconds"))
+let min = JSON.parse(localStorage.getItem("minutes"))
 
 function displayTimer() {
   let timerRef = document.querySelector('#play-timer');
 
+  if (sec) seconds = sec;
+  if (min) minutes = min;
   seconds += 1;
   if (seconds == 60) {
     seconds = 0;
     minutes++;
     if (minutes == 60) {
       minutes = 0;
-      hours++;
     }
   }
 
   let m = minutes < 10 ? "0" + minutes : minutes;
   let s = seconds < 10 ? "0" + seconds : seconds;
 
+  console.log(m, sec++, seconds++);
   let time = `${m} : ${s}`
   timerRef.innerHTML = time;
+
 
   play.showTime = time;
 
   if (!play.playing) {
     clearInterval(int);
   }
+
+  localStorage.setItem("minutes", minutes);
+  localStorage.setItem("seconds", seconds);
 }
 
 function resetTimer() {
@@ -57,6 +69,10 @@ function showSettings(event) {
     const settingsPage = document.querySelector(".wrapper-settings");
     settingsPage.classList.toggle("show");
     document.body.classList.toggle('show');
+  }
+  if (elem.classList.contains("result__close")) {
+    const resultPage = document.querySelector(".result")
+    resultPage.classList.remove("show");
   }
 }
 
@@ -79,7 +95,9 @@ window.onload = function () {
 
   document.querySelector(".reset").addEventListener("click", () => {
     if (hasLocalStorage) {
-      localStorage.clear();
+      localStorage.removeItem("minesweeper.data");
+      localStorage.removeItem("seconds");
+      localStorage.removeItem("minutes");
     }
     const opts = {
       mines: parseInt(document.querySelector("#input_mines").value, 10),
@@ -105,13 +123,12 @@ window.onload = function () {
         })
       }
     }
+
+    document.getElementById("game_status").style.color = "var(--textcolor)";
+
     resetTimer()
     newGame(opts);
   });
-
-  document.querySelector("#game_status").addEventListener("click", () => {
-    play.saveResult()
-  })
 
   document.querySelector(".block__button").addEventListener("click", (event) => {
     const opts = {
@@ -203,6 +220,8 @@ window.onload = function () {
       switchInput.checked = true;
     }
   }
+
+  if (localStorage.getItem("seconds"))  { startTimer() } else { clearInterval(int) }
 }
 
 

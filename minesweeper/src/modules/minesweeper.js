@@ -6,6 +6,7 @@ import themeToggle from '../components/switch-theme/';
 import lose from '../assets/lose.mp3';
 import win from '../assets/win.mp3';
 import Result from '../components/results';
+import main from '../components/main';
 
 export class Minesweeper {
   constructor(opts) {
@@ -43,7 +44,8 @@ export class Minesweeper {
 
   addHtml() {
     const body = document.querySelector("body");
-    body.append(Header, Main, Settings, Result);
+    body.append(Header, Main, Settings);
+    Main.prepend(Result);
     Header.appendChild(themeToggle);
     console.log(this.showFieldToConsole());
   }
@@ -161,8 +163,19 @@ export class Minesweeper {
         this.grid[r][c] = new Cell(this.grid[r][c]);
       }
     }
-
     this.render();
+
+    const ulResult = document.querySelector(".list")
+    const liArr = JSON.parse(localStorage.getItem("result"));
+
+    if (liArr) {
+      for (let i = 0; i < liArr.length; i++) {
+        const li = document.createElement("li")
+        li.innerHTML = liArr[i]
+        li.classList.add("list__item");
+        ulResult.append(li)
+      }
+    }
   }
 
   getAdjacentCells(row, col) {
@@ -192,7 +205,7 @@ export class Minesweeper {
 
         document.getElementById("game_status").textContent = this.status_msg;
         document.getElementById("game_status").style.color = "#EE0000";
-        this.saveResult(this.status_msg);
+        this.saveResult();
       } else if (!cell.isFlagged && cell.value == 0) {
         const adjacentCells = this.getAdjacentCells(cell.y, cell.x);
         for (let i = 0; i < adjacentCells.length; i++) {
@@ -244,6 +257,7 @@ export class Minesweeper {
       this.status_msg = 'You are the winner !';
       this.playing = false;
       this.timer = false;
+      this.saveResult()
       setTimeout(() => {
         const winSound = new Audio(win);
         winSound.play();
@@ -273,23 +287,25 @@ export class Minesweeper {
     }
   }
 
-  saveResult(result, time) {
+  saveResult() {
+    const resPage = document.querySelector(".result");
+    resPage.classList.add("show");
     let ulResult = document.querySelector(".list")
-    const li = document.createElement("li")
-    li.classList.add("list__item");
     const ul = ulResult.children;
-
+    let li = document.createElement("li")
+    li.classList.add("list__item");
     li.innerHTML = `<span class"list__result">${this.status_msg}</span><span class"list__time">${this.showTime}</span>`
-    if (ul.length >= 10) {
-      for (let i = 0; i < ul.length; i++) {
-        if (ul[i + 1]) {
-          ul[i].innerHTML = ul[i + 1].innerHTML
-        }
-        ul[10].innerHTML = (li);
-      }
+
+    if (ul.length > 10) {
+      ulResult.children[10].remove();
     }
-    ulResult.appendChild(li);
-    this.result.push()
+    ulResult.prepend(li);
+    let arr = []
+
+    for (let i = 0; i < ulResult.children.length; i++) {
+      arr.push(ulResult.children[i].innerHTML);
+    }
+    localStorage.setItem("result", JSON.stringify(arr));
   }
 }
 
