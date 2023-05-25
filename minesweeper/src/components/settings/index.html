@@ -1,6 +1,6 @@
 <div class="wrapper-settings">
   <div class="background"></div>
-  <div class="settings">
+  <form class="settings">
     <div class="settings__row block">
       <button class="settings__close">
         <i class="close-icon"
@@ -27,6 +27,9 @@
         name="number"
         type="number"
         value="10"
+        max="99"
+        min="0"
+        step="1"
         placeholder="Enter amount of mines"
         required
       />
@@ -51,10 +54,9 @@
       </div>
     </div>
     <div class="settings__row block">
-      <button class="block__button">
-        <p>create</p>
+      <button type="submit" class="block__button">
         new game
       </button>
     </div>
-  </div>
+  </form>
 </div>

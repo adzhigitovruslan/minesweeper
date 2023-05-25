@@ -41,13 +41,6 @@
   box-shadow: 0px 0px 10px 1px var(--textcolor);
   transition: 0.2s;
 
-  &__result {
-    color: var(--textcolor);
-    margin-bottom: 20px;
-    font-size: 20px;
-    text-align: left;
-  }
-
   &__header {
     display: flex;
     justify-content: space-between;

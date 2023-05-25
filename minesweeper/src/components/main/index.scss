@@ -46,6 +46,10 @@
     margin-left: 10px;
   }
 
+  & .settings-btn__text {
+    pointer-events: none;
+  }
+
   &:hover {
     & .settings-btn__icon {
       -webkit-animation: settingsIcon 3 5s linear infinite;
@@ -209,6 +213,11 @@
     }
     &.flagged {
       background-color: var(--close-mines);
+    }
+    &.code-M {
+      background-image: url(../../assets/favicon-16x16.png);
+      background-repeat: no-repeat;
+      background-position: center;
     }
   }
 }

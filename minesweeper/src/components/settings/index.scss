@@ -135,18 +135,8 @@
       outline: 0;
       border: 0;
       transition: 0.2s;
-      p {
-        width: 0;
-        overflow: hidden;
-        transition: 0.4s;
-        pointer-events: none;
-      }
-      &:hover {
-        p {
-          width: 80px;
-        }
-      }
     }
+
   }
 
   .radio {

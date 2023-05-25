@@ -7,6 +7,7 @@ import lose from '../assets/lose.mp3';
 import win from '../assets/win.mp3';
 import Result from '../components/results';
 import main from '../components/main';
+import { setTimer } from './setTimer';
 
 export class Minesweeper {
   constructor(opts) {
@@ -26,9 +27,11 @@ export class Minesweeper {
         status_msg: "Minesweeper", //game status msg, 'Minesweeper', 'Won','Lost', or 'Playing'
         playing: true,
         movesMade: 0, //keep track of the number of moves
-        timer: false,
         result: [],
         showTime: '',
+        minutes: '',
+        seconds: '',
+        firstClick: false,
       },
       { options: opts },
       currentData
@@ -58,34 +61,6 @@ export class Minesweeper {
       }
     }
 
-
-    let placedMines = 0;
-    while (placedMines < this.options.mines) {
-      let y = Math.floor(Math.random() * this.options.buttons);
-      let x = Math.floor(Math.random() * this.options.buttons);
-
-      let button = this.grid[x][y];
-      if (!button.isMine) {
-        button.isMine = true;
-        button.value = "M";
-        placedMines++;
-      }
-    }
-
-    for (let i = 0; i < this.options["buttons"]; i++) {
-      for (let j = 0; j < this.options["buttons"]; j++) {
-        if (!this.grid[i][j].isMine) {
-          let mineCount = 0;
-          let adjCell = this.getAdjacentCells(i, j);
-          for (let m = adjCell.length; m--;) {
-            if (adjCell[m].isMine) {
-              mineCount++
-            }
-          }
-          this.grid[i][j].value = mineCount;
-        }
-      }
-    }
     this.render();
   }
 
@@ -189,6 +164,7 @@ export class Minesweeper {
   }
 
   openCell(cell) {
+
     if (!cell.isOpened && !cell.isFlagged && this.playing) {
       const cellElem = cell.getElement();
       cell.isOpened = true;
@@ -206,26 +182,56 @@ export class Minesweeper {
         document.getElementById("game_status").textContent = this.status_msg;
         document.getElementById("game_status").style.color = "#EE0000";
         this.saveResult();
-      } else if (!cell.isFlagged && cell.value == 0) {
+      } else if (!cell.isFlagged && cell.value == 0 && this.firstClick) {
         const adjacentCells = this.getAdjacentCells(cell.y, cell.x);
         for (let i = 0; i < adjacentCells.length; i++) {
           this.openCell(adjacentCells[i]);
         }
       }
+      if (!this.firstClick) {
+        let placedMines = 0;
+        while (placedMines < this.options.mines) {
+          let y = Math.floor(Math.random() * this.options.buttons);
+          let x = Math.floor(Math.random() * this.options.buttons);
+
+          let button = this.grid[x][y];
+          if (!button.isMine) {
+            button.isMine = true;
+            button.value = "M";
+            placedMines++;
+          }
+        }
+
+        for (let i = 0; i < this.options["buttons"]; i++) {
+          for (let j = 0; j < this.options["buttons"]; j++) {
+            if (!this.grid[i][j].isMine) {
+              let mineCount = 0;
+              let adjCell = this.getAdjacentCells(i, j);
+              for (let m = adjCell.length; m--;) {
+                if (adjCell[m].isMine) {
+                  mineCount++
+                }
+              }
+              this.grid[i][j].value = mineCount;
+            }
+          }
+        }
+      }
     }
+    this.firstClick = true;
+    console.log(this.showFieldToConsole());
   }
 
   placeFlag(cell) {
     if (!cell.isOpened && this.playing) {
       const cellElem = cell.getElement();
-      console.log(cellElem);
       const minesLeft = document.querySelector("#mines-left");
 
       if (!cell.isFlagged) {
         cell.isFlagged = true;
         cellElem.classList.add("flagged");
         minesLeft.textContent = parseFloat(minesLeft.textContent) - 1;
-
+        this.movesMade++;
         if (cell.isMine) {
           this.minesFound++;
         } else {
@@ -237,6 +243,7 @@ export class Minesweeper {
         cellElem.classList.remove("flagged");
         cellElem.textContent = '';
         minesLeft.textContent = parseFloat(minesLeft.textContent) + 1;
+        this.movesMade--;
 
         if (cell.isMine) {
           this.minesFound--;
@@ -248,15 +255,15 @@ export class Minesweeper {
     } else {
       return;
     }
+    document.querySelector("#moves").textContent = this.movesMade;
   }
 
   checkWin() {
     const gameStatus = document.querySelector("#game_status");
 
     if (this.minesFound === this.options.mines && this.falseMines === 0) {
-      this.status_msg = 'You are the winner !';
+      this.status_msg = 'The winner !';
       this.playing = false;
-      this.timer = false;
       this.saveResult()
       setTimeout(() => {
         const winSound = new Audio(win);
@@ -265,6 +272,28 @@ export class Minesweeper {
       gameStatus.textContent = this.status_msg;
       gameStatus.style.color = "#00c000";
     }
+
+    let noMinesCellCount = 0
+    let allCells = Math.pow(this.options.buttons, 2)
+    for (let i = 0; i < this.options.buttons; i++) {
+      for (let j = 0; j < this.options.buttons; j++) {
+        if (this.grid[i][j].isOpened && !this.grid[i][j].isMine) {
+          noMinesCellCount++;
+        }
+        if (allCells - this.options.mines === noMinesCellCount) {
+          this.status_msg = 'The winner !';
+          this.playing = false;
+          this.saveResult()
+          setTimeout(() => {
+            const winSound = new Audio(win);
+            winSound.play();
+          }, 1000);
+          gameStatus.textContent = this.status_msg;
+          gameStatus.style.color = "#00c000";
+        }
+      }
+    }
+    console.log(noMinesCellCount);
     this.saveGame();
   }
 
@@ -294,7 +323,7 @@ export class Minesweeper {
     const ul = ulResult.children;
     let li = document.createElement("li")
     li.classList.add("list__item");
-    li.innerHTML = `<span class"list__result">${this.status_msg}</span><span class"list__time">${this.showTime}</span>`
+    li.innerHTML = `<span class"list__result">${this.status_msg}</span><span class"list__time">${this.minutes} : ${this.seconds}</span>`
 
     if (ul.length > 10) {
       ulResult.children[10].remove();

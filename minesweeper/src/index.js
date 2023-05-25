@@ -1,66 +1,77 @@
 import './index.html';
 import "./index.scss";
 import { Minesweeper } from './modules/minesweeper';
+import { setTimer } from './modules/setTimer';
 import pickMp3 from './assets/pick.mp3';
 import rightClick from './assets/rightClick.mp3';
 
 let play;
-let [seconds, minutes] = [0, 0];
-let int = null;
+let running = false;
+let paused = false;
+let delayThen;
+let runTimer = null;
+// start timer
+
+function start(int) {
+  if (!running) {
+    running = true;
+    let delay = localStorage.getItem('delay') || 0;
+    let then = localStorage.getItem('then') || Date.now();
+    runTimer = setInterval(() => {
+      run(delay, then)
+    }, 1000);
+
+  }
+};
+
+// run
+function run(delay, then) {
+  // const output = document.getElementById('timer');
+  const output = document.querySelector("#play-timer");
+  // get output array and print
+
+  var elapsed = Date.now() - delay - then
+  var d = [60000, 1000];
+  var time = [];
+  var i = 0;
+
+  while (i < d.length) {
+    var t = Math.floor(elapsed / d[i]);
+
+    // remove parsed time for next iteration
+    elapsed -= t * d[i];
+
+    // add '0' prefix to m,s,d when needed
+    t = (i >= 0 && t < 10) ? '0' + t : t;
+    time.push(t);
+    i++;
+  }
+
+  play.minutes = time[0]
+  play.seconds = time[1]
+  output.innerHTML = `${time[0]} : ${time[1]}`
+
+  localStorage.setItem("minutes", time[0]);
+  localStorage.setItem("seconds", time[1]);
+  localStorage.setItem("delay", delay);
+  localStorage.setItem("then", then);
+  localStorage.setItem("isTimer", JSON.stringify(true));
+};
+
+// clear
+function reset() {
+  const output = document.getElementById('play-timer');
+  running = false;
+  clearInterval(runTimer);
+  output.innerHTML = '00 : 00';
+  localStorage.setItem("minutes", 0);
+  localStorage.setItem("seconds", 0);
+  localStorage.setItem("isTimer", false);
+};
+
 
 function newGame(opts) {
   play = new Minesweeper(opts);
-}
-
-function startTimer() {
-  if (int !== null) {
-    clearInterval(int);
-  }
-
-  int = setInterval(function () {
-    displayTimer()
-  }, 1000);
-}
-
-let sec = JSON.parse(localStorage.getItem("seconds"))
-let min = JSON.parse(localStorage.getItem("minutes"))
-
-function displayTimer() {
-  let timerRef = document.querySelector('#play-timer');
-
-  if (sec) seconds = sec;
-  if (min) minutes = min;
-  seconds += 1;
-  if (seconds == 60) {
-    seconds = 0;
-    minutes++;
-    if (minutes == 60) {
-      minutes = 0;
-    }
-  }
-
-  let m = minutes < 10 ? "0" + minutes : minutes;
-  let s = seconds < 10 ? "0" + seconds : seconds;
-
-  console.log(m, sec++, seconds++);
-  let time = `${m} : ${s}`
-  timerRef.innerHTML = time;
-
-
-  play.showTime = time;
-
-  if (!play.playing) {
-    clearInterval(int);
-  }
-
-  localStorage.setItem("minutes", minutes);
-  localStorage.setItem("seconds", seconds);
-}
-
-function resetTimer() {
-  clearInterval(int);
-  [seconds, minutes] = [0, 0, 0, 0];
-  document.querySelector("#play-timer").textContent = '00 : 00';
 }
 
 function showSettings(event) {
@@ -87,6 +98,7 @@ function switchTheme(event) {
 }
 
 window.onload = function () {
+
   newGame({ buttons: 10, mines: 10, size: "easy" })
 
   const radiobtn = document.querySelectorAll(".radio_input-btn")
@@ -98,6 +110,8 @@ window.onload = function () {
       localStorage.removeItem("minesweeper.data");
       localStorage.removeItem("seconds");
       localStorage.removeItem("minutes");
+      localStorage.removeItem("then");
+      localStorage.removeItem("delay");
     }
     const opts = {
       mines: parseInt(document.querySelector("#input_mines").value, 10),
@@ -126,7 +140,7 @@ window.onload = function () {
 
     document.getElementById("game_status").style.color = "var(--textcolor)";
 
-    resetTimer()
+    reset()
     newGame(opts);
   });
 
@@ -159,15 +173,14 @@ window.onload = function () {
     if (hasLocalStorage) {
       localStorage.clear();
     }
-    resetTimer();
+    reset()
     newGame(opts);
   })
 
   document.querySelector(".field").addEventListener("click", (event) => {
     const elem = event.target;
-
     if (play.playing) {
-      startTimer()
+      start()
       const gameStatus = document.querySelector("#game_status");
       play.status_msg = "Playing"
       gameStatus.textContent = play.status_msg
@@ -175,12 +188,13 @@ window.onload = function () {
 
     if (elem.classList.contains("button")) {
       const button = play.grid[elem.dataset.y][elem.dataset.x]
-      if (!button.isOpened && play.playing) {
+      if (!button.isOpened && !button.isFlagged && play.playing) {
         play.movesMade++;
         document.querySelector("#moves").textContent = play.movesMade;
         play.openCell(button);
         const clickSound = new Audio(pickMp3);
         clickSound.play();
+        play.checkWin();
         play.saveGame();
       }
     }
@@ -195,8 +209,6 @@ window.onload = function () {
       const button = play.grid[elem.dataset.y][elem.dataset.x];
 
       if (!button.isOpened && play.playing) {
-        play.movesMade++;
-        document.querySelector("#moves").textContent = play.movesMade;
         play.placeFlag(button);
         const clickSound = new Audio(rightClick);
         clickSound.play();
@@ -221,7 +233,13 @@ window.onload = function () {
     }
   }
 
-  if (localStorage.getItem("seconds"))  { startTimer() } else { clearInterval(int) }
+  if (JSON.parse(localStorage.getItem("isTimer") === "true")) {
+    let sec = localStorage.getItem("seconds")
+    let min = localStorage.getItem("minutes")
+    document.querySelector("#play-timer").innerHTML = `${min} : ${sec}`
+    start()
+  }
+
 }
 
 
