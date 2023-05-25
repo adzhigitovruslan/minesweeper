@@ -178,7 +178,6 @@ export class Minesweeper {
 
         document.getElementById("game_status").textContent = this.status_msg;
         document.getElementById("game_status").style.color = "#EE0000";
-        this.saveResult();
       } else if (!cell.isFlagged && cell.value == 0 && this.firstClick) {
         const adjacentCells = this.getAdjacentCells(cell.y, cell.x);
         for (let i = 0; i < adjacentCells.length; i++) {
