@@ -13,4 +13,11 @@
     font-size: 25px;
     transition: 0.2s;
   }
+
+  &-sound {
+    .sun svg {
+      -webkit-animation: tilt 15s linear infinite;
+      animation: tilt 15s linear infinite;
+    }
+  }
 }

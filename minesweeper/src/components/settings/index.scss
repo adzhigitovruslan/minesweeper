@@ -31,7 +31,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    height: 400px;
+    min-height: 400px;
     width: 300px;
     display: flex;
     flex-direction: column;
@@ -139,6 +139,9 @@
 
   }
 
+  .error-message {
+    color:rgba(235, 37, 37, 0.833);
+  }
   .radio {
     &__title {
       color: var(--textcolor);

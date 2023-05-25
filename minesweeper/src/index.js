@@ -1,15 +1,21 @@
 import './index.html';
 import "./index.scss";
 import { Minesweeper } from './modules/minesweeper';
-import { setTimer } from './modules/setTimer';
 import pickMp3 from './assets/pick.mp3';
 import rightClick from './assets/rightClick.mp3';
+import lose from './assets/lose.mp3';
+import win from './assets/win.mp3';
 
 let play;
 let running = false;
 let paused = false;
 let delayThen;
 let runTimer = null;
+const clickLeft = new Audio(pickMp3);
+const clickRight = new Audio(rightClick);
+const loseSound = new Audio(lose);
+const winSound = new Audio(win);
+
 // start timer
 
 function start(int) {
@@ -69,14 +75,13 @@ function reset() {
   localStorage.setItem("isTimer", false);
 };
 
-
 function newGame(opts) {
   play = new Minesweeper(opts);
 }
 
 function showSettings(event) {
   let elem = event.target
-  if (elem.classList.contains("settings__close") || elem.classList.contains("settings-btn") || elem.classList.contains("background") || elem.classList.contains("block__button")) {
+  if (elem.classList.contains("settings__close") || elem.classList.contains("settings-btn") || elem.classList.contains("background")) {
     const settingsPage = document.querySelector(".wrapper-settings");
     settingsPage.classList.toggle("show");
     document.body.classList.toggle('show');
@@ -96,6 +101,18 @@ function switchTheme(event) {
     localStorage.setItem("theme", 'light');
   }
 }
+
+function switchSound(event) {
+  const elems = [clickLeft, clickRight, loseSound]
+  elems.forEach((elem) => {
+    if (event.target.checked) {
+      elem.muted = true;
+    } else {
+      elem.muted = false
+    }
+  })
+}
+
 
 window.onload = function () {
 
@@ -144,37 +161,48 @@ window.onload = function () {
     newGame(opts);
   });
 
-  document.querySelector(".block__button").addEventListener("click", (event) => {
-    const opts = {
-      mines: parseInt(document.querySelector("#input_mines").value, 10),
-    }
-
-    for (let i = 0; i < radiobtn.length; i++) {
-      if (radiobtn[i].checked) {
-        Object.assign(opts, {
-          buttons: radiobtn[i].value,
-        })
+  document.querySelector("#form").addEventListener("submit", (e) => {
+    e.preventDefault()
+    const input = document.querySelector("#input_mines")
+    if (input.value > 9 && input.value < 100) {
+      const opts = {
+        mines: parseInt(document.querySelector("#input_mines").value, 10),
       }
-      if (radiobtn[i].checked && radiobtn[i].value === '10') {
-        Object.assign(opts, {
-          size: "easy"
-        })
-      } else if (radiobtn[i].checked && radiobtn[i].value === '15') {
-        Object.assign(opts, {
-          size: "medium"
-        })
-      } else if (radiobtn[i].checked && radiobtn[i].value === '25') {
-        Object.assign(opts, {
-          size: "hard"
-        })
-      }
-    }
 
-    if (hasLocalStorage) {
-      localStorage.clear();
+      for (let i = 0; i < radiobtn.length; i++) {
+        if (radiobtn[i].checked) {
+          Object.assign(opts, {
+            buttons: radiobtn[i].value,
+          })
+        }
+        if (radiobtn[i].checked && radiobtn[i].value === '10') {
+          Object.assign(opts, {
+            size: "easy"
+          })
+        } else if (radiobtn[i].checked && radiobtn[i].value === '15') {
+          Object.assign(opts, {
+            size: "medium"
+          })
+        } else if (radiobtn[i].checked && radiobtn[i].value === '25') {
+          Object.assign(opts, {
+            size: "hard"
+          })
+        }
+      }
+
+      if (hasLocalStorage) {
+        localStorage.clear();
+      }
+
+      const settingsPage = document.querySelector(".wrapper-settings");
+      settingsPage.classList.toggle("show");
+      document.body.classList.toggle('show');
+
+      reset()
+      newGame(opts);
+    } else {
+      return;
     }
-    reset()
-    newGame(opts);
   })
 
   document.querySelector(".field").addEventListener("click", (event) => {
@@ -191,10 +219,9 @@ window.onload = function () {
       if (!button.isOpened && !button.isFlagged && play.playing) {
         play.movesMade++;
         document.querySelector("#moves").textContent = play.movesMade;
-        play.openCell(button);
-        const clickSound = new Audio(pickMp3);
-        clickSound.play();
-        play.checkWin();
+        play.openCell(button, loseSound);
+        clickLeft.play();
+        play.checkWin(winSound);
         play.saveGame();
       }
     }
@@ -210,16 +237,18 @@ window.onload = function () {
 
       if (!button.isOpened && play.playing) {
         play.placeFlag(button);
-        const clickSound = new Audio(rightClick);
-        clickSound.play();
-        play.checkWin();
+        clickRight.play();
+        play.checkWin(winSound);
         play.saveGame()
       }
     }
   })
 
-  const switchInput = document.querySelector(".switch__input")
+  const switchInput = document.querySelector(".switch-theme")
   switchInput.addEventListener("change", switchTheme, false);
+
+  const switchSoundInput = document.querySelector(".switch-sound")
+  switchSoundInput.addEventListener("change", switchSound, false);
 
   const currentTheme = localStorage.getItem("theme") ? localStorage.getItem("theme") : null;
 

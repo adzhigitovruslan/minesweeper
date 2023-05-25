@@ -3,11 +3,8 @@ import Header from '../components/header';
 import Main from '../components/main';
 import Settings from '../components/settings';
 import themeToggle from '../components/switch-theme/';
-import lose from '../assets/lose.mp3';
-import win from '../assets/win.mp3';
 import Result from '../components/results';
-import main from '../components/main';
-import { setTimer } from './setTimer';
+import Footer from '../components/footer';
 
 export class Minesweeper {
   constructor(opts) {
@@ -47,7 +44,7 @@ export class Minesweeper {
 
   addHtml() {
     const body = document.querySelector("body");
-    body.append(Header, Main, Settings);
+    body.append(Header, Main, Settings, Footer);
     Main.prepend(Result);
     Header.appendChild(themeToggle);
     console.log(this.showFieldToConsole());
@@ -126,7 +123,8 @@ export class Minesweeper {
     const gameStatus = document.querySelector("#game_status");
     const playTimer = document.querySelector("#play-timer");
 
-    minesLeft.textContent = this.options.mines - (this.falseMines + this.minesFound)
+    let content = this.options.mines - (this.falseMines + this.minesFound)
+    minesLeft.textContent = content > 0 ? content : 0;
     moves.textContent = this.movesMade;
     gameStatus.textContent = this.status_msg;
     playTimer.textContent = '00 : 00';
@@ -163,7 +161,7 @@ export class Minesweeper {
     return result;
   }
 
-  openCell(cell) {
+  openCell(cell, sound) {
 
     if (!cell.isOpened && !cell.isFlagged && this.playing) {
       const cellElem = cell.getElement();
@@ -175,8 +173,7 @@ export class Minesweeper {
         this.status_msg = "You lost!";
         this.playing = false;
         setTimeout(() => {
-          const loseSound = new Audio(lose);
-          loseSound.play();
+          sound.play();
         }, 1000);
 
         document.getElementById("game_status").textContent = this.status_msg;
@@ -226,12 +223,11 @@ export class Minesweeper {
     if (!cell.isOpened && this.playing) {
       const cellElem = cell.getElement();
       const minesLeft = document.querySelector("#mines-left");
-
+      minesLeft.textContent = Number(minesLeft.textContent) > 0 ? minesLeft.textContent : 0;
       if (!cell.isFlagged) {
         cell.isFlagged = true;
         cellElem.classList.add("flagged");
-        minesLeft.textContent = parseFloat(minesLeft.textContent) - 1;
-        this.movesMade++;
+        minesLeft.textContent = minesLeft.textContent > 0 ? parseFloat(minesLeft.textContent) - 1 : 0;
         if (cell.isMine) {
           this.minesFound++;
         } else {
@@ -242,8 +238,7 @@ export class Minesweeper {
         cell.isFlagged = false;
         cellElem.classList.remove("flagged");
         cellElem.textContent = '';
-        minesLeft.textContent = parseFloat(minesLeft.textContent) + 1;
-        this.movesMade--;
+        minesLeft.textContent = minesLeft.textContent >= this.options.mines ? this.options.mines : parseFloat(minesLeft.textContent) + 1;
 
         if (cell.isMine) {
           this.minesFound--;
@@ -255,10 +250,9 @@ export class Minesweeper {
     } else {
       return;
     }
-    document.querySelector("#moves").textContent = this.movesMade;
   }
 
-  checkWin() {
+  checkWin(sound) {
     const gameStatus = document.querySelector("#game_status");
 
     if (this.minesFound === this.options.mines && this.falseMines === 0) {
@@ -266,8 +260,7 @@ export class Minesweeper {
       this.playing = false;
       this.saveResult()
       setTimeout(() => {
-        const winSound = new Audio(win);
-        winSound.play();
+        sound.play();
       }, 1000);
       gameStatus.textContent = this.status_msg;
       gameStatus.style.color = "#00c000";
@@ -285,15 +278,13 @@ export class Minesweeper {
           this.playing = false;
           this.saveResult()
           setTimeout(() => {
-            const winSound = new Audio(win);
-            winSound.play();
+            sound.play();
           }, 1000);
           gameStatus.textContent = this.status_msg;
           gameStatus.style.color = "#00c000";
         }
       }
     }
-    console.log(noMinesCellCount);
     this.saveGame();
   }
 
