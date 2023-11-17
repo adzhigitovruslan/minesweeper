@@ -2,6 +2,7 @@
 
 <img src="./screenshot.png">
 
+
 ### Link to the project: https://adzhigitovruslan.github.io/minesweeper/
 
 ## Description
